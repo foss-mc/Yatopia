@@ -26,7 +26,7 @@ pipeline {
         }
         stage('Decompile & apply patches') {
             tools {
-                jdk "OpenJDK 8"
+                jdk "OpenJDK 11"
             }
             steps {
                 withMaven(
@@ -43,7 +43,7 @@ pipeline {
         }
         stage('Build') {
             tools {
-                jdk "OpenJDK 8"
+                jdk "OpenJDK 11"
             }
             steps {
                 withMaven(
