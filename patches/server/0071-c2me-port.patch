@@ -82,8 +82,21 @@ index d7f95bd32842fdee0ce53fc97d31ffb3577cdc78..f34561eed7b955460d7963cc9b79a0ee
      }
  
      // Tuinity start - optimise collision
+diff --git a/src/main/java/net/minecraft/world/entity/ai/behavior/WeightedList.java b/src/main/java/net/minecraft/world/entity/ai/behavior/WeightedList.java
+index e2b5d6155bebdbf99b0850de7f9e1f5d342f9e2f..ef19b7cae3944653f5db17c6c3a3e80ce23c03f9 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/behavior/WeightedList.java
++++ b/src/main/java/net/minecraft/world/entity/ai/behavior/WeightedList.java
+@@ -14,7 +14,7 @@ import java.util.stream.Stream;
+ 
+ public class WeightedList<U> {
+ 
+-    protected final List<WeightedList.a<U>> list; public final List<WeightedList.a<U>> getList() { return this.list; } // Paper - decompile conflict // Tuinity - OBFHELPER
++    public final List<WeightedList.a<U>> list; public final List<WeightedList.a<U>> getList() { return this.list; } // Paper - decompile conflict // Tuinity - OBFHELPER // Yatopia -  protected -> public
+     private final Random b;
+     private final boolean isUnsafe; // Paper
+ 
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ChunkStatus.java b/src/main/java/net/minecraft/world/level/chunk/ChunkStatus.java
-index f4a4d63a2e21b08580023cf0dcd15a68d192cf14..e9af7ac82bb8761b1017a30f0eeb6e05973eff23 100644
+index f4a4d63a2e21b08580023cf0dcd15a68d192cf14..b3ccdab77c8cfc8d9dac02041dc8677b88e846e4 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ChunkStatus.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ChunkStatus.java
 @@ -22,6 +22,8 @@ import net.minecraft.world.level.levelgen.HeightMap;
@@ -103,7 +116,7 @@ index f4a4d63a2e21b08580023cf0dcd15a68d192cf14..e9af7ac82bb8761b1017a30f0eeb6e05
 +        // return this.v.doWork(this, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, (IChunkAccess) list.get(list.size() / 2));
 +        final IChunkAccess targetChunk = (IChunkAccess) list.get(list.size() / 2);
 +        //noinspection ConstantConditions
-+        return ChunkStatusUtils.runChunkGenWithLock(targetChunk.getPos(), this.taskMargin, ((IWorldGenLockable) worldserver).getWorldGenChunkLock(), () ->
++        return ChunkStatusUtils.runChunkGenWithLock(targetChunk.getPos(), this.x, ((IWorldGenLockable) worldserver).getWorldGenChunkLock(), () ->
 +                ChunkStatusUtils.getThreadingType((ChunkStatus) (Object) this).runTask(((IWorldGenLockable) worldserver).getWorldGenSingleThreadedLock(), () ->
 +                    this.v.doWork(this, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, targetChunk)
 +                )
@@ -112,7 +125,7 @@ index f4a4d63a2e21b08580023cf0dcd15a68d192cf14..e9af7ac82bb8761b1017a30f0eeb6e05
  
      public CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> a(WorldServer worldserver, DefinedStructureManager definedstructuremanager, LightEngineThreaded lightenginethreaded, Function<IChunkAccess, CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>>> function, IChunkAccess ichunkaccess) {
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/feature/stateproviders/WorldGenFeatureStateProviderWeighted.java b/src/main/java/net/minecraft/world/level/levelgen/feature/stateproviders/WorldGenFeatureStateProviderWeighted.java
-index a2e573ae886bfd77b18e8324855da31a3d85cbe8..9061b943d66897bc65cf5839b533a626abbf227c 100644
+index a2e573ae886bfd77b18e8324855da31a3d85cbe8..3b9404edab05ea0f10584aefa12f6a6820ce4dbe 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/feature/stateproviders/WorldGenFeatureStateProviderWeighted.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/feature/stateproviders/WorldGenFeatureStateProviderWeighted.java
 @@ -38,6 +38,6 @@ public class WorldGenFeatureStateProviderWeighted extends WorldGenFeatureStatePr
@@ -120,7 +133,7 @@ index a2e573ae886bfd77b18e8324855da31a3d85cbe8..9061b943d66897bc65cf5839b533a626
      @Override
      public IBlockData a(Random random, BlockPosition blockposition) {
 -        return (IBlockData) this.c.b(random);
-+        return new WeightedList<IBlockData>(this.c.getList()).b(random);
++        return (IBlockData) this.c.b(random); // TODO
      }
  }
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/templatesystem/DefinedStructure.java b/src/main/java/net/minecraft/world/level/levelgen/structure/templatesystem/DefinedStructure.java
@@ -316,7 +329,7 @@ index 0000000000000000000000000000000000000000..b80923bcda9045968e0fad39f2e40b99
 \ No newline at end of file
 diff --git a/src/main/java/org/yatopiamc/c2me/commom/threading/worldgen/WorldGenThreadingExecutorUtils.java b/src/main/java/org/yatopiamc/c2me/commom/threading/worldgen/WorldGenThreadingExecutorUtils.java
 new file mode 100644
-index 0000000000000000000000000000000000000000..f2445729c6d60f5e668537bc7f517bc687a8a7f8
+index 0000000000000000000000000000000000000000..215010825a18881f84d94ead66314b946d46d75b
 --- /dev/null
 +++ b/src/main/java/org/yatopiamc/c2me/commom/threading/worldgen/WorldGenThreadingExecutorUtils.java
 @@ -0,0 +1,17 @@
@@ -330,7 +343,7 @@ index 0000000000000000000000000000000000000000..f2445729c6d60f5e668537bc7f517bc6
 +public class WorldGenThreadingExecutorUtils {
 +
 +    public static final ForkJoinPool mainExecutor = new ForkJoinPool(
-+            YatopiaConfig.parallelism,
++            YatopiaConfig.c2meThreads,
 +            new C2MEForkJoinWorkerThreadFactory("C2ME worldgen worker #%d", Thread.NORM_PRIORITY - 1),
 +            null,
 +            true
@@ -523,15 +536,15 @@ index 0000000000000000000000000000000000000000..ab5b9be9dcf67bdd9237fb7d21574155
 +}
 \ No newline at end of file
 diff --git a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
-index 15e2fa125bc293b954cceb5b1fbcec7fade3e4db..f379fc39ec7cacd19deb2364cde0053472ff6a48 100644
+index 15e2fa125bc293b954cceb5b1fbcec7fade3e4db..545bf94bf47f0c6e9da1a4c162e081cbb2cd8390 100644
 --- a/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 +++ b/src/main/java/org/yatopiamc/yatopia/server/YatopiaConfig.java
 @@ -276,4 +276,10 @@ public class YatopiaConfig {
          fixProtocolLib = getBoolean("settings.fix-protocollib", fixProtocolLib);
      }
  
-+    public boolean allowThreadedFeatures = false;
-+    public int c2meThreads = Math.min(6, Runtime.getRuntime().availableProcessors());
++    public static boolean allowThreadedFeatures = false;
++    public static int c2meThreads = Math.min(6, Runtime.getRuntime().availableProcessors());
 +    private static void c2me() {
 +        allowThreadedFeatures = getBoolean("settings.c2me.allow-threaded-features", allowThreadedFeatures);
 +        c2meThreads = getInt("settings.c2me.parallelism", c2meThreads);
