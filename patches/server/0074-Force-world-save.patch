@@ -5,7 +5,7 @@ Subject: [PATCH] Force world save
 
 
 diff --git a/src/main/java/net/minecraft/world/entity/ai/village/poi/VillagePlace.java b/src/main/java/net/minecraft/world/entity/ai/village/poi/VillagePlace.java
-index 55d497f4305de50e58c7e0788724576f81128138..edb45dd2933b985efb29d61b2a844615f5f1cc9f 100644
+index 29cd71efe86eea2227f373c15c39dc530e9e8199..4028526166fe528d772729e9334289df460f3b1e 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/village/poi/VillagePlace.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/village/poi/VillagePlace.java
 @@ -366,6 +366,7 @@ public class VillagePlace extends RegionFileSection<VillagePlaceSection> {

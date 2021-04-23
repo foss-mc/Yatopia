@@ -284,7 +284,6 @@ This is an overview over all patches that are currently used.
 | server |  Movement options for armor stands      | Mariell Hoversholm |  |
 | server |  Multi-Threaded Server Ticking Vanilla      | Spottedleaf |  |
 | server |  Multi-Threaded ticking CraftBukkit      | Spottedleaf |  |
-| server |  Multi-threaded RegionFile IO      | ishland |  |
 | server |  Multi-threaded World Upgrade      | ishland |  |
 | server |  Multithreaded Entity Tracker fixup      | Simon Gardling |  |
 | server |  Multithreaded entity tracking      | Paul Sauve |  |
