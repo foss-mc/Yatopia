@@ -65,7 +65,7 @@ pipeline {
                         paperworkdir="$basedir/Paper/work"
                         mcver=$(cat "$paperworkdir/BuildData/info.json" | grep minecraftVersion | cut -d '"' -f 4)
                         
-                        patchedJarPath=$(find "$basedir/Yatopia-Server/build/libs/" -type f -name "*.jar" | grep -v '\-sources.jar$')
+                        patchedJarPath=$(find "$basedir/Yatopia-Server/build/libs/" -type f -name "*.jar" | grep -v '\\-sources.jar$')
 
                         vanillaJarPath="$paperworkdir/Minecraft/$mcver/$mcver.jar"
 
