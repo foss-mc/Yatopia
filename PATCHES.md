@@ -102,6 +102,7 @@ This is an overview over all patches that are currently used.
 | server |  Breedable Polar Bears      | William Blake Galbreath |  |
 | server |  Bring back server name      | William Blake Galbreath |  |
 | api |  Bring back server name      | William Blake Galbreath |  |
+| server |  C2ME Port      | ishland | Simon Gardling |
 | server |  Cache entityhuman display name      | Paul Sauve |  |
 | server |  Cache palette array      | Paul Sauve |  |
 | server |  Cat spawning options      | William Blake Galbreath |  |
@@ -432,7 +433,6 @@ This is an overview over all patches that are currently used.
 | server |  Zombie break door minimum difficulty option      | BillyGalbreath |  |
 | server |  Zombie horse naturally spawn      | William Blake Galbreath |  |
 | server |  add config for logging login location      | Simon Gardling |  |
-| server |  c2me port      | Simon Gardling |  |
 | server |  dont load chunks for physics      | Aikar |  |
 | server |  lithium DataTrackerMixin      | JellySquid | tr7zw |
 | server |  lithium HashedList      | JellySquid |  |
