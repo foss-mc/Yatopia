@@ -22,55 +22,52 @@ index d0259f18488e1ecf0276865e0ff7958726a40033..f0a73238612327d71cf78801df816823
  
      <repositories>
 diff --git a/src/main/java/net/minecraft/server/level/PlayerChunkMap.java b/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
-index 0b9ed4042612f5242e5b2d057b716170f22c78b1..17e85d50966582540f2e9d74f4b37e444e73d800 100644
+index 0b9ed4042612f5242e5b2d057b716170f22c78b1..9b3aa025069f45bf94949cbf626ccfa69a646845 100644
 --- a/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
 +++ b/src/main/java/net/minecraft/server/level/PlayerChunkMap.java
-@@ -110,6 +110,7 @@ import org.apache.logging.log4j.Logger;
- 
- import org.bukkit.entity.Player; // CraftBukkit
- import org.spigotmc.AsyncCatcher;
-+import org.yatopiamc.c2me.common.threading.GlobalExecutors;
- 
- public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
- 
-@@ -159,7 +160,8 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
+@@ -159,7 +159,7 @@ public class PlayerChunkMap extends IChunkLoader implements PlayerChunk.d {
      // Paper start
      final Mailbox<ChunkTaskQueueSorter.a<Runnable>> mailboxLight;
      public void addLightTask(PlayerChunk playerchunk, Runnable run) {
 -        this.mailboxLight.a(ChunkTaskQueueSorter.a(playerchunk, run));
-+        GlobalExecutors.scheduler.execute(run);
-+        // this.mailboxLight.a(ChunkTaskQueueSorter.a(playerchunk, run));
++        org.yatopiamc.c2me.common.threading.GlobalExecutors.scheduler.execute(run); // Yatopia - port C2ME
      }
      // Paper end
      public final WorldLoadListener worldLoadListener;
 diff --git a/src/main/java/net/minecraft/server/level/WorldServer.java b/src/main/java/net/minecraft/server/level/WorldServer.java
-index d7f95bd32842fdee0ce53fc97d31ffb3577cdc78..f34561eed7b955460d7963cc9b79a0ee2aff2620 100644
+index d7f95bd32842fdee0ce53fc97d31ffb3577cdc78..2d36772c4da9e555113d69da21a9606ebff24a05 100644
 --- a/src/main/java/net/minecraft/server/level/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/level/WorldServer.java
-@@ -177,8 +177,14 @@ import org.bukkit.event.world.TimeSkipEvent;
- // CraftBukkit end
+@@ -178,7 +178,17 @@ import org.bukkit.event.world.TimeSkipEvent;
  import it.unimi.dsi.fastutil.ints.IntArrayList; // Tuinity
  import net.gegy1000.tictacs.NonBlockingWorldAccess; // Yatopia
-+import org.yatopiamc.c2me.common.threading.worldgen.IWorldGenLockable;
-+import com.ibm.asyncutil.locks.AsyncLock;
-+import com.ibm.asyncutil.locks.AsyncNamedLock;
  
 -public class WorldServer extends World implements GeneratorAccessSeed, NonBlockingWorldAccess { // Yatopia
-+public class WorldServer extends World implements GeneratorAccessSeed, NonBlockingWorldAccess, IWorldGenLockable { // Yatopia
++// Yatopia start
++import org.yatopiamc.c2me.common.threading.worldgen.IWorldGenLockable;
++import com.ibm.asyncutil.locks.AsyncLock; 
++import com.ibm.asyncutil.locks.AsyncNamedLock;
++// Yatopia end
 +
-+    private volatile AsyncLock worldGenSingleThreadedLock = null;
++public class WorldServer extends World implements GeneratorAccessSeed, NonBlockingWorldAccess, IWorldGenLockable { // Yatopia // Yatopia - port C2ME
++
++    private volatile AsyncLock worldGenSingleThreadedLock = null; // Yatopia - port C2ME
 +    private volatile AsyncNamedLock<ChunkCoordIntPair> worldGenChunkLock = null;
++    // Yatopia - port C2ME
  
      public static final BlockPosition a = new BlockPosition(100, 50, 0);
      private static final Logger LOGGER = LogManager.getLogger();
-@@ -608,6 +614,18 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
+@@ -608,7 +618,23 @@ public class WorldServer extends World implements GeneratorAccessSeed, NonBlocki
  
          this.asyncChunkTaskManager = new com.destroystokyo.paper.io.chunk.ChunkTaskManager(this); // Paper
          this.fakeTime = this.worldDataServer.getDayTime(); // Purpur
++        // Yatopia start - port C2ME
 +        this.worldGenSingleThreadedLock = AsyncLock.createFair();
 +        this.worldGenChunkLock = AsyncNamedLock.createFair();
++        // Yatopia end - port C2ME
 +    }
 +
++    // Yatopia start - port C2ME
 +    @Override
 +    public AsyncLock getWorldGenSingleThreadedLock() {
 +        return this.worldGenSingleThreadedLock;
@@ -80,10 +77,12 @@ index d7f95bd32842fdee0ce53fc97d31ffb3577cdc78..f34561eed7b955460d7963cc9b79a0ee
 +    public AsyncNamedLock<ChunkCoordIntPair> getWorldGenChunkLock() {
 +        return this.worldGenChunkLock;
      }
++    // Yatopia end - port C2ME
  
      // Tuinity start - optimise collision
+     public boolean collidesWithAnyBlockOrWorldBorder(@Nullable Entity entity, AxisAlignedBB axisalignedbb, boolean loadChunks,
 diff --git a/src/main/java/net/minecraft/world/entity/ai/behavior/WeightedList.java b/src/main/java/net/minecraft/world/entity/ai/behavior/WeightedList.java
-index e2b5d6155bebdbf99b0850de7f9e1f5d342f9e2f..ef19b7cae3944653f5db17c6c3a3e80ce23c03f9 100644
+index e2b5d6155bebdbf99b0850de7f9e1f5d342f9e2f..30db0ba3674a85c8dd866fab94c5374ba203c5cd 100644
 --- a/src/main/java/net/minecraft/world/entity/ai/behavior/WeightedList.java
 +++ b/src/main/java/net/minecraft/world/entity/ai/behavior/WeightedList.java
 @@ -14,7 +14,7 @@ import java.util.stream.Stream;
@@ -91,29 +90,29 @@ index e2b5d6155bebdbf99b0850de7f9e1f5d342f9e2f..ef19b7cae3944653f5db17c6c3a3e80c
  public class WeightedList<U> {
  
 -    protected final List<WeightedList.a<U>> list; public final List<WeightedList.a<U>> getList() { return this.list; } // Paper - decompile conflict // Tuinity - OBFHELPER
-+    public final List<WeightedList.a<U>> list; public final List<WeightedList.a<U>> getList() { return this.list; } // Paper - decompile conflict // Tuinity - OBFHELPER // Yatopia -  protected -> public
++    public final List<WeightedList.a<U>> list; public final List<WeightedList.a<U>> getList() { return this.list; } // Paper - decompile conflict // Tuinity - OBFHELPER // Yatopia - protected -> public
      private final Random b;
      private final boolean isUnsafe; // Paper
  
 diff --git a/src/main/java/net/minecraft/world/level/chunk/ChunkStatus.java b/src/main/java/net/minecraft/world/level/chunk/ChunkStatus.java
-index f4a4d63a2e21b08580023cf0dcd15a68d192cf14..b3ccdab77c8cfc8d9dac02041dc8677b88e846e4 100644
+index f4a4d63a2e21b08580023cf0dcd15a68d192cf14..0b2bcb7377aeeaa791f88c5d1330f6d8ce83ee67 100644
 --- a/src/main/java/net/minecraft/world/level/chunk/ChunkStatus.java
 +++ b/src/main/java/net/minecraft/world/level/chunk/ChunkStatus.java
 @@ -22,6 +22,8 @@ import net.minecraft.world.level.levelgen.HeightMap;
  import net.minecraft.world.level.levelgen.WorldGenStage;
  import net.minecraft.world.level.levelgen.structure.templatesystem.DefinedStructureManager;
  import net.minecraft.world.level.lighting.LightEngine;
-+import org.yatopiamc.c2me.common.threading.worldgen.ChunkStatusUtils;
-+import org.yatopiamc.c2me.common.threading.worldgen.IWorldGenLockable;
++import org.yatopiamc.c2me.common.threading.worldgen.ChunkStatusUtils; // Yatopia
++import org.yatopiamc.c2me.common.threading.worldgen.IWorldGenLockable; // Yatopia
  
  public class ChunkStatus {
  
-@@ -201,7 +203,14 @@ public class ChunkStatus {
+@@ -201,7 +203,15 @@ public class ChunkStatus {
      }
  
      public CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> a(WorldServer worldserver, ChunkGenerator chunkgenerator, DefinedStructureManager definedstructuremanager, LightEngineThreaded lightenginethreaded, Function<IChunkAccess, CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>>> function, List<IChunkAccess> list) {
 -        return this.v.doWork(this, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, (IChunkAccess) list.get(list.size() / 2));
-+        // return this.v.doWork(this, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, (IChunkAccess) list.get(list.size() / 2));
++        // Yatopia start - port C2ME
 +        final IChunkAccess targetChunk = (IChunkAccess) list.get(list.size() / 2);
 +        //noinspection ConstantConditions
 +        return ChunkStatusUtils.runChunkGenWithLock(targetChunk.getPos(), this.x, ((IWorldGenLockable) worldserver).getWorldGenChunkLock(), () ->
@@ -121,6 +120,7 @@ index f4a4d63a2e21b08580023cf0dcd15a68d192cf14..b3ccdab77c8cfc8d9dac02041dc8677b
 +                    this.v.doWork(this, worldserver, chunkgenerator, definedstructuremanager, lightenginethreaded, function, list, targetChunk)
 +                )
 +        );
++        // Yatopia end
      }
  
      public CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> a(WorldServer worldserver, DefinedStructureManager definedstructuremanager, LightEngineThreaded lightenginethreaded, Function<IChunkAccess, CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>>> function, IChunkAccess ichunkaccess) {
@@ -137,23 +137,15 @@ index a2e573ae886bfd77b18e8324855da31a3d85cbe8..3b9404edab05ea0f10584aefa12f6a68
      }
  }
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/templatesystem/DefinedStructure.java b/src/main/java/net/minecraft/world/level/levelgen/structure/templatesystem/DefinedStructure.java
-index 13983f3271d33ab6e4c7030de5865edbd7b0cd8a..90603fa85480badba8d67949680ec70e6d6e725b 100644
+index 13983f3271d33ab6e4c7030de5865edbd7b0cd8a..7460f5c85800f0d3c6076bc944b10b5931ba22bf 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/structure/templatesystem/DefinedStructure.java
 +++ b/src/main/java/net/minecraft/world/level/levelgen/structure/templatesystem/DefinedStructure.java
-@@ -48,6 +48,7 @@ import net.minecraft.world.phys.AxisAlignedBB;
- import net.minecraft.world.phys.Vec3D;
- import net.minecraft.world.phys.shapes.VoxelShapeBitSet;
- import net.minecraft.world.phys.shapes.VoxelShapeDiscrete;
-+import java.util.concurrent.ConcurrentHashMap;
- 
- public class DefinedStructure {
- 
-@@ -843,7 +844,7 @@ public class DefinedStructure {
+@@ -843,7 +843,7 @@ public class DefinedStructure {
          private final Map<Block, List<DefinedStructure.BlockInfo>> b;
  
          private a(List<DefinedStructure.BlockInfo> list) {
 -            this.b = Maps.newHashMap();
-+            this.b = new ConcurrentHashMap<>();
++            this.b = new java.util.concurrent.ConcurrentHashMap<>(); // Yatopia - port C2ME
              this.a = list;
          }
  
