@@ -1,9 +1,8 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: ishland <ishlandmc@yeah.net>
 Date: Wed, 3 Feb 2021 23:00:18 +0800
-Subject: [PATCH] Decompile fixes for WorldChunkManagerMultiNoise
+Subject: [PATCH] lithium MultiNoiseBiomeSourceMixin
 
-who knows what duplex is doing
 
 diff --git a/src/main/java/net/minecraft/world/level/biome/BiomeBase.java b/src/main/java/net/minecraft/world/level/biome/BiomeBase.java
 index c4fb051739c1c186c1574185e0653f513755987d..e9993fa0f3af9e3ecd01f91ef5c14e528bdb33b5 100644
@@ -24,7 +23,7 @@ index c4fb051739c1c186c1574185e0653f513755987d..e9993fa0f3af9e3ecd01f91ef5c14e52
      private static class dProxy extends BiomeBase.d {
          private dProxy(Precipitation biomebase_precipitation, float f, TemperatureModifier biomebase_temperaturemodifier, float f1) {
 diff --git a/src/main/java/net/minecraft/world/level/biome/WorldChunkManagerMultiNoise.java b/src/main/java/net/minecraft/world/level/biome/WorldChunkManagerMultiNoise.java
-index 5287aec4c384c6cea76334ae1d8dc99070e8f43e..92d1e771c2f896fb3b363a57aa59c04c3f466bea 100644
+index 5287aec4c384c6cea76334ae1d8dc99070e8f43e..23637d9be9f9973266c1bba699c40cdc6c5d9e6d 100644
 --- a/src/main/java/net/minecraft/world/level/biome/WorldChunkManagerMultiNoise.java
 +++ b/src/main/java/net/minecraft/world/level/biome/WorldChunkManagerMultiNoise.java
 @@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
@@ -89,8 +88,57 @@ index 5287aec4c384c6cea76334ae1d8dc99070e8f43e..92d1e771c2f896fb3b363a57aa59c04c
      }, (worldchunkmanagermultinoise) -> {
          return (Either) worldchunkmanagermultinoise.d().map(Either::left).orElseGet(() -> {
              return Either.right(worldchunkmanagermultinoise);
-@@ -111,13 +129,13 @@ public class WorldChunkManagerMultiNoise extends WorldChunkManager {
+@@ -100,8 +118,44 @@ public class WorldChunkManagerMultiNoise extends WorldChunkManager {
+         });
      }
+ 
++    //Yatopia - Faster Method
++    /**
++     * @reason Remove stream based code in favor of regular collections.
++     * @author SuperCoder79
++     */
+     @Override
+     public BiomeBase getBiome(int i, int j, int k) {
++        // [VanillaCopy] MultiNoiseBiomeSource#getBiomeForNoiseGen
++
++        // Get the y value for perlin noise sampling. This field is always set to false in vanilla code.
++        int l = this.q ? j : 0;
++
++        // Calculate the noise point based using 4 perlin noise samplers.
++        BiomeBase.c biomebase_c = new BiomeBase.c(
++                (float) this.l.a(i, l, k),
++                (float) this.m.a(i, l, k),
++                (float) this.n.a(i, l, k),
++                (float) this.o.a(i, l, k),
++                0.0F);
++
++        int idx = -1;
++        float min = Float.POSITIVE_INFINITY;
++
++        // Iterate through the biome points and calculate the distance to the current noise point.
++        for (int itterator = 0; itterator < this.p.size(); itterator++) {
++            float distance =  this.p.get(itterator).getFirst().a(biomebase_c);
++
++            // If the distance is less than the recorded minimum, update the minimum and set the current index.
++            if (min > distance) {
++                idx = itterator;
++                min = distance;
++            }
++        }
++
++        // Return the biome with the noise point closest to the evaluated one.
++        return this.p.get(idx).getSecond().get() == null ? BiomeRegistry.b :  this.p.get(idx).getSecond().get();
++    }
++    /* //Yatopia - Replace Method
+         int l = this.q ? j : 0;
+         BiomeBase.c biomebase_c = new BiomeBase.c((float) this.l.a((double) i, (double) l, (double) k), (float) this.m.a((double) i, (double) l, (double) k), (float) this.n.a((double) i, (double) l, (double) k), (float) this.o.a((double) i, (double) l, (double) k), 0.0F);
+ 
+@@ -109,15 +163,17 @@ public class WorldChunkManagerMultiNoise extends WorldChunkManager {
+             return ((BiomeBase.c) pair.getFirst()).a(biomebase_c);
+         })).map(Pair::getSecond).map(Supplier::get).orElse(BiomeRegistry.b);
+     }
++    */ //Yatopia End
++
  
      public boolean b(long i) {
 -        return this.r == i && this.s.isPresent() && Objects.equals(((Pair) this.s.get()).getSecond(), WorldChunkManagerMultiNoise.b.a);
@@ -106,7 +154,7 @@ index 5287aec4c384c6cea76334ae1d8dc99070e8f43e..92d1e771c2f896fb3b363a57aa59c04c
              return new WorldChunkManagerMultiNoise(olong, ImmutableList.of(Pair.of(new BiomeBase.c(0.0F, 0.0F, 0.0F, 0.0F, 0.0F), () -> {
                  return (BiomeBase) iregistry.d(Biomes.NETHER_WASTES);
              }), Pair.of(new BiomeBase.c(0.0F, -0.5F, 0.0F, 0.0F, 0.0F), () -> {
-@@ -136,7 +154,7 @@ public class WorldChunkManagerMultiNoise extends WorldChunkManager {
+@@ -136,7 +192,7 @@ public class WorldChunkManagerMultiNoise extends WorldChunkManager {
          public b(MinecraftKey minecraftkey, Function3<WorldChunkManagerMultiNoise.b, IRegistry<BiomeBase>, Long, WorldChunkManagerMultiNoise> function3) {
              this.c = minecraftkey;
              this.d = function3;
@@ -115,7 +163,7 @@ index 5287aec4c384c6cea76334ae1d8dc99070e8f43e..92d1e771c2f896fb3b363a57aa59c04c
          }
  
          public WorldChunkManagerMultiNoise a(IRegistry<BiomeBase> iregistry, long i) {
-@@ -144,16 +162,16 @@ public class WorldChunkManagerMultiNoise extends WorldChunkManager {
+@@ -144,16 +200,16 @@ public class WorldChunkManagerMultiNoise extends WorldChunkManager {
          }
      }
  
@@ -136,7 +184,7 @@ index 5287aec4c384c6cea76334ae1d8dc99070e8f43e..92d1e771c2f896fb3b363a57aa59c04c
          });
          private final WorldChunkManagerMultiNoise.b b;
          private final IRegistry<BiomeBase> c;
-@@ -187,7 +205,7 @@ public class WorldChunkManagerMultiNoise extends WorldChunkManager {
+@@ -187,7 +243,7 @@ public class WorldChunkManagerMultiNoise extends WorldChunkManager {
          private final int b;
          private final DoubleList c;
          public static final Codec<WorldChunkManagerMultiNoise.a> a = RecordCodecBuilder.create((instance) -> {

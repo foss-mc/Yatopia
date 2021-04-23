@@ -157,7 +157,6 @@ This is an overview over all patches that are currently used.
 | server |  Custom Locale Support      | Zoe |  |
 | server |  Custom table implementation for blockstate state lookups      | Spottedleaf |  |
 | server |  Customizable wither health and healing      | jmp |  |
-| server |  Decompile fixes for WorldChunkManagerMultiNoise      | ishland |  |
 | api |  Default permissions      | William Blake Galbreath |  |
 | server |  Delay chunk unloads      | Spottedleaf |  |
 | server |  Despawn rate config options per projectile type      | jmp |  |
@@ -440,7 +439,7 @@ This is an overview over all patches that are currently used.
 | server |  lithium MixinBox      | JellySquid |  |
 | server |  lithium MixinDirection      | JellySquid |  |
 | server |  lithium MixinGoalSelector      | JellySquid |  |
-| server |  lithium MultiNoiseBiomeSourceMixin      | SuperCoder7979 |  |
+| server |  lithium MultiNoiseBiomeSourceMixin      | ishland |  |
 | server |  lithium NoiseChunkGeneratorMixin      | JellySquid |  |
 | server |  lithium PerlinNoiseSamplerMixin      | JellySquid | Bud Gidiere |
 | server |  lithium VoronoiBiomeAccessTypeMixin      | JellySquid |  |
