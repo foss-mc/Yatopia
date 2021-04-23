@@ -5,7 +5,7 @@ Subject: [PATCH] Modify POM
 
 
 diff --git a/pom.xml b/pom.xml
-index 6c200882954adc4831307f3d6dfa3202571fb30b..1bf7c7d0a192f4b05611075537a4d718799190a1 100644
+index 6c200882954adc4831307f3d6dfa3202571fb30b..fce4921f723e74eeb8db0d428647143b1c923c68 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -3,18 +3,18 @@
@@ -94,3 +94,12 @@ index 6c200882954adc4831307f3d6dfa3202571fb30b..1bf7c7d0a192f4b05611075537a4d718
          </dependency>
      </dependencies>
  
+@@ -214,7 +227,7 @@
+             <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-shade-plugin</artifactId>
+-                <version>3.2.3</version>
++                <version>3.2.4</version>
+                 <executions>
+                     <execution>
+                         <phase>package</phase>

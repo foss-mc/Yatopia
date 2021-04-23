@@ -5,7 +5,7 @@ Subject: [PATCH] Add GameProfileLookupEvent
 
 
 diff --git a/pom.xml b/pom.xml
-index 1bf7c7d0a192f4b05611075537a4d718799190a1..ce3676f8f8db8cff686d4cdf47b496d51e0af7df 100644
+index fce4921f723e74eeb8db0d428647143b1c923c68..72348d16df2965a94ad4a0aaa805b4ceb2a7cfc9 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -42,6 +42,10 @@

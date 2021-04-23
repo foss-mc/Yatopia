@@ -8,7 +8,7 @@ Port of https://github.com/YatopiaMC/C2ME-fabric
 Co-authored-by: Simon Gardling <titaniumtown@gmail.com>
 
 diff --git a/pom.xml b/pom.xml
-index d0259f18488e1ecf0276865e0ff7958726a40033..f0a73238612327d71cf78801df816823d80893a0 100644
+index c17ecfee739298ad4d0ecb0f9d8eb622468250ab..b75799ab4c158203b3903428c6403c55b2322806 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -203,6 +203,12 @@

@@ -3,6 +3,9 @@ pipeline {
     options { timestamps() }
     stages {
         stage('Cleanup') {
+            tools {
+                jdk "OpenJDK 11"
+            }
             steps {
                 scmSkip(deleteBuild: true, skipPattern:'.*\\[CI-SKIP\\].*')
                 sh 'git config --global gc.auto 0'
@@ -14,6 +17,9 @@ pipeline {
             }
         }
         stage('Init project & submodules') {
+            tools {
+                jdk "OpenJDK 11"
+            }
             steps {
                 withMaven(
                     maven: '3',
