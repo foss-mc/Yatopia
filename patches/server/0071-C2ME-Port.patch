@@ -127,18 +127,6 @@ index f4a4d63a2e21b08580023cf0dcd15a68d192cf14..0b2bcb7377aeeaa791f88c5d1330f6d8
      }
  
      public CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>> a(WorldServer worldserver, DefinedStructureManager definedstructuremanager, LightEngineThreaded lightenginethreaded, Function<IChunkAccess, CompletableFuture<Either<IChunkAccess, PlayerChunk.Failure>>> function, IChunkAccess ichunkaccess) {
-diff --git a/src/main/java/net/minecraft/world/level/levelgen/feature/stateproviders/WorldGenFeatureStateProviderWeighted.java b/src/main/java/net/minecraft/world/level/levelgen/feature/stateproviders/WorldGenFeatureStateProviderWeighted.java
-index a2e573ae886bfd77b18e8324855da31a3d85cbe8..3b9404edab05ea0f10584aefa12f6a6820ce4dbe 100644
---- a/src/main/java/net/minecraft/world/level/levelgen/feature/stateproviders/WorldGenFeatureStateProviderWeighted.java
-+++ b/src/main/java/net/minecraft/world/level/levelgen/feature/stateproviders/WorldGenFeatureStateProviderWeighted.java
-@@ -38,6 +38,6 @@ public class WorldGenFeatureStateProviderWeighted extends WorldGenFeatureStatePr
- 
-     @Override
-     public IBlockData a(Random random, BlockPosition blockposition) {
--        return (IBlockData) this.c.b(random);
-+        return (IBlockData) this.c.b(random); // TODO
-     }
- }
 diff --git a/src/main/java/net/minecraft/world/level/levelgen/structure/templatesystem/DefinedStructure.java b/src/main/java/net/minecraft/world/level/levelgen/structure/templatesystem/DefinedStructure.java
 index 13983f3271d33ab6e4c7030de5865edbd7b0cd8a..7460f5c85800f0d3c6076bc944b10b5931ba22bf 100644
 --- a/src/main/java/net/minecraft/world/level/levelgen/structure/templatesystem/DefinedStructure.java
