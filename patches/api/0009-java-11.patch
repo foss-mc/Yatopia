@@ -5,7 +5,7 @@ Subject: [PATCH] java 11
 
 
 diff --git a/pom.xml b/pom.xml
-index 2f38afd3850260933a8398165945162d4cb3ee72..c3ab38266cfa232969a5fe9a05c3bf0ca355ada9 100644
+index 9bbb946a378fb6d70ee5c1fbd5214a232c638d9b..3fec0a71912a7b229c787304813f040aea749d5b 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -19,8 +19,8 @@
@@ -17,5 +17,5 @@ index 2f38afd3850260933a8398165945162d4cb3ee72..c3ab38266cfa232969a5fe9a05c3bf0c
 +        <maven.compiler.source>11</maven.compiler.source>
 +        <maven.compiler.target>11</maven.compiler.target>
          <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+         <adventure.version>4.7.0</adventure.version> <!-- Paper - When updating this make sure to update the linked JavaDocs on the homepage as well! -->
      </properties>
- 

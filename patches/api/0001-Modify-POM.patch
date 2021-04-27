@@ -5,7 +5,7 @@ Subject: [PATCH] Modify POM
 
 
 diff --git a/pom.xml b/pom.xml
-index 6c200882954adc4831307f3d6dfa3202571fb30b..fce4921f723e74eeb8db0d428647143b1c923c68 100644
+index 4d826aa8ea1139e66514767da6ba17811f7ecc5c..1eb8bd942e2c8d650cd857c82e48dc433cbdfff6 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -3,18 +3,18 @@
@@ -32,8 +32,8 @@ index 6c200882954adc4831307f3d6dfa3202571fb30b..fce4921f723e74eeb8db0d428647143b
      <description>An enhanced plugin API for Minecraft servers.</description>
  
      <properties>
-@@ -24,6 +24,19 @@
-         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+@@ -25,6 +25,19 @@
+         <adventure.version>4.7.0</adventure.version> <!-- Paper - When updating this make sure to update the linked JavaDocs on the homepage as well! -->
      </properties>
  
 +    <!-- Yatopia start -->
@@ -52,7 +52,7 @@ index 6c200882954adc4831307f3d6dfa3202571fb30b..fce4921f723e74eeb8db0d428647143b
      <repositories>
          <repository>
              <id>sonatype</id>
-@@ -67,7 +80,7 @@
+@@ -68,7 +81,7 @@
          <dependency>
              <groupId>it.unimi.dsi</groupId>
              <artifactId>fastutil</artifactId>
@@ -61,7 +61,7 @@ index 6c200882954adc4831307f3d6dfa3202571fb30b..fce4921f723e74eeb8db0d428647143b
              <scope>provided</scope>
          </dependency>
          <dependency>
-@@ -114,7 +127,7 @@
+@@ -115,7 +128,7 @@
          <dependency>
              <groupId>org.yaml</groupId>
              <artifactId>snakeyaml</artifactId>
@@ -70,7 +70,7 @@ index 6c200882954adc4831307f3d6dfa3202571fb30b..fce4921f723e74eeb8db0d428647143b
              <scope>compile</scope>
          </dependency>
          <!-- annotations -->
-@@ -128,7 +141,7 @@
+@@ -129,7 +142,7 @@
          <dependency>
              <groupId>org.slf4j</groupId>
              <artifactId>slf4j-api</artifactId>
@@ -79,7 +79,7 @@ index 6c200882954adc4831307f3d6dfa3202571fb30b..fce4921f723e74eeb8db0d428647143b
              <scope>compile</scope>
          </dependency>
          <!-- testing -->
-@@ -154,12 +167,12 @@
+@@ -155,12 +168,12 @@
          <dependency>
              <groupId>org.ow2.asm</groupId>
              <artifactId>asm</artifactId>
@@ -94,7 +94,7 @@ index 6c200882954adc4831307f3d6dfa3202571fb30b..fce4921f723e74eeb8db0d428647143b
          </dependency>
      </dependencies>
  
-@@ -214,7 +227,7 @@
+@@ -215,7 +228,7 @@
              <plugin>
                  <groupId>org.apache.maven.plugins</groupId>
                  <artifactId>maven-shade-plugin</artifactId>

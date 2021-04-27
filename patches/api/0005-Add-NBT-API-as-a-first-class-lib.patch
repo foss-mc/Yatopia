@@ -5,10 +5,10 @@ Subject: [PATCH] Add NBT API as a first-class lib
 
 
 diff --git a/pom.xml b/pom.xml
-index 72348d16df2965a94ad4a0aaa805b4ceb2a7cfc9..2f38afd3850260933a8398165945162d4cb3ee72 100644
+index 79fd72af4783720c4bc9b89a9b5b6ae44ded9e50..9bbb946a378fb6d70ee5c1fbd5214a232c638d9b 100644
 --- a/pom.xml
 +++ b/pom.xml
-@@ -46,6 +46,11 @@
+@@ -47,6 +47,11 @@
              <id>mojang</id>
              <url>https://libraries.minecraft.net/</url>
          </repository>
@@ -20,7 +20,7 @@ index 72348d16df2965a94ad4a0aaa805b4ceb2a7cfc9..2f38afd3850260933a8398165945162d
      </repositories>
  
      <!-- Paper start -->
-@@ -185,6 +190,11 @@
+@@ -186,6 +191,11 @@
              <artifactId>asm-commons</artifactId>
              <version>9.1</version>
          </dependency>
@@ -32,7 +32,7 @@ index 72348d16df2965a94ad4a0aaa805b4ceb2a7cfc9..2f38afd3850260933a8398165945162d
      </dependencies>
  
      <build>
-@@ -259,6 +269,12 @@
+@@ -260,6 +270,12 @@
                      <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
                      <!-- when downloading via Maven we can pull depends individually -->
                      <shadedArtifactAttached>true</shadedArtifactAttached>
