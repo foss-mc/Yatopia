@@ -1,6 +1,11 @@
 pipeline {
     agent { label 'slave' }
     options { timestamps() }
+
+    environment {
+        discord_webhook1 = credentials('yatopia_discord_webhook')
+    }
+
     stages {
         stage('Cleanup') {
             tools {
@@ -87,6 +92,14 @@ pipeline {
             post {
                 always {
                     cleanWs()
+                }
+            }
+        }
+
+        stage('Discord Webhook') {
+            steps {
+                script {
+                    discordSend description: "Yatopia Jenkins Build", footer: "Yatopia", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: discord_webhook1
                 }
             }
         }
