@@ -140,6 +140,31 @@ index 13983f3271d33ab6e4c7030de5865edbd7b0cd8a..7460f5c85800f0d3c6076bc944b10b59
              this.a = list;
          }
  
+diff --git a/src/main/java/net/minecraft/world/level/newbiome/layer/GenLayers.java b/src/main/java/net/minecraft/world/level/newbiome/layer/GenLayers.java
+index 5bbd71f2cf6db34dd01e8e209809a4661505aaf1..76995e812492d3fd0f9180525727174bf3d8c409 100644
+--- a/src/main/java/net/minecraft/world/level/newbiome/layer/GenLayers.java
++++ b/src/main/java/net/minecraft/world/level/newbiome/layer/GenLayers.java
+@@ -13,7 +13,7 @@ import net.minecraft.world.level.newbiome.layer.traits.AreaTransformer2;
+ 
+ public class GenLayers {
+ 
+-    private static final Int2IntMap a = (Int2IntMap) SystemUtils.a((Object) (new Int2IntOpenHashMap()), (int2intopenhashmap) -> {
++    private static final Int2IntMap a = (Int2IntMap) SystemUtils.a((new Int2IntOpenHashMap()), (int2intopenhashmap) -> { // Yatopia - decompile fixes
+         a(int2intopenhashmap, GenLayers.Type.BEACH, 16);
+         a(int2intopenhashmap, GenLayers.Type.BEACH, 26);
+         a(int2intopenhashmap, GenLayers.Type.DESERT, 2);
+@@ -154,9 +154,9 @@ public class GenLayers {
+ 
+     public static GenLayer a(long i, boolean flag, int j, int k) {
+         boolean flag1 = true;
+-        AreaFactory<AreaLazy> areafactory = a(flag, j, k, (l) -> {
++        AreaFactory<AreaLazy> areafactory = () -> a(flag, j, k, (l) -> { // Yatopia
+             return new WorldGenContextArea(25, i, l);
+-        });
++        }).make(); // Yatopia
+ 
+         return new GenLayer(areafactory);
+     }
 diff --git a/src/main/java/org/yatopiamc/c2me/commom/threading/GlobalExecutors.java b/src/main/java/org/yatopiamc/c2me/commom/threading/GlobalExecutors.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..dcf55bc98818f98c1a7b6869306a40c11b842cdf
