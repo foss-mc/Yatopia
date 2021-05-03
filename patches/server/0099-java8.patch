@@ -1,0 +1,50 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: foss-mc <69294560+foss-mc@users.noreply.github.com>
+Date: Mon, 3 May 2021 03:24:03 +0000
+Subject: [PATCH] port AsyncCombinedLock to java8
+
+
+diff --git a/src/main/java/org/yatopiamc/c2me/commom/util/AsyncCombinedLock.java b/src/main/java/org/yatopiamc/c2me/commom/util/AsyncCombinedLock.java
+index b20fa65c0b6cf349d02e613aaefff426b840ae50..f4b66241c84206e49f812cd6ec5f2fdf788fd8c2 100644
+--- a/src/main/java/org/yatopiamc/c2me/commom/util/AsyncCombinedLock.java
++++ b/src/main/java/org/yatopiamc/c2me/commom/util/AsyncCombinedLock.java
+@@ -24,7 +24,7 @@ public class AsyncCombinedLock {
+     private final CompletableFuture<AsyncLock.LockToken> future = new CompletableFuture<>();
+ 
+     public AsyncCombinedLock(Set<AsyncLock> lockHandles) {
+-        this.lockHandles = Set.copyOf(lockHandles);
++        this.lockHandles = new java.util.HashSet(lockHandles);
+         lockWorker.execute(this::tryAcquire);
+     }
+ 
+@@ -34,18 +34,18 @@ public class AsyncCombinedLock {
+         for (AsyncLock lockHandle : lockHandles) {
+             final LockEntry entry = new LockEntry(lockHandle, lockHandle.tryLock());
+             tryLocks.add(entry);
+-            if (entry.lockToken.isEmpty()) {
++            if (!entry.lockToken.isPresent()) {
+                 allAcquired = false;
+                 break;
+             }
+         }
+         if (allAcquired) {
+-            future.complete(new CombinedLockToken(tryLocks.stream().flatMap(lockEntry -> lockEntry.lockToken.stream()).collect(Collectors.toUnmodifiableSet())));
++            future.complete(new CombinedLockToken(tryLocks.stream().filter(lockEntry -> lockEntry.lockToken.isPresent()).map(lockEntry -> lockEntry.lockToken.get()).collect(Collectors.toSet())));
+         } else {
+             boolean triedRelock = false;
+             for (LockEntry entry : tryLocks) {
+                 entry.lockToken.ifPresent(AsyncLock.LockToken::releaseLock);
+-                if (!triedRelock && entry.lockToken.isEmpty()) {
++                if (!triedRelock && !entry.lockToken.isPresent()) { // Patina - java8
+                     entry.lock.acquireLock().thenCompose(lockToken -> {
+                         lockToken.releaseLock();
+                         return CompletableFuture.runAsync(this::tryAcquire, lockWorker);
+@@ -80,7 +80,7 @@ public class AsyncCombinedLock {
+         private final Set<AsyncLock.LockToken> delegates;
+ 
+         private CombinedLockToken(Set<AsyncLock.LockToken> delegates) {
+-            this.delegates = Set.copyOf(delegates);
++            this.delegates = delegates;
+         }
+ 
+         @Override
