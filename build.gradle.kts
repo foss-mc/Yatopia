@@ -59,7 +59,7 @@ subprojects {
     }
 
     java {
-        sourceCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.current()
         withSourcesJar()
     }
