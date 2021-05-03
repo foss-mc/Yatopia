@@ -59,9 +59,6 @@ subprojects {
     }
 
     java {
-        if(JavaVersion.VERSION_11 > JavaVersion.current()){
-            error("This build must be run with Java 11 or later")
-        }
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.current()
         withSourcesJar()
